@@ -1,0 +1,13 @@
+﻿body
+#title {
+    height: 80px;
+    position: relative;
+    background-color: #FFFFFF;
+}
+
+.boxTest {
+    position: absolute;
+    width: 100%;
+    background-color: lightblue;
+    insert-block: 800px 700px;
+}
