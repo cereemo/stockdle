@@ -1,6 +1,6 @@
 ﻿body
 #title {
-    height: 80px;
+    height: 800px;
     position: relative;
     background-color: #FFFFFF;
 }
@@ -9,5 +9,6 @@
     position: absolute;
     width: 100%;
     background-color: lightblue;
-    insert-block: 800px 700px;
+    inset-block-start: 0px;
+    insert-block-end: 800px;
 }
