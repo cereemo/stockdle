@@ -1,14 +1,14 @@
 ﻿body
 #title {
-    height: 800px;
+    height: 400px;
     position: relative;
     background-color: #FFFFFF;
 }
 
 .boxTest {
-    position: absolute;
-    width: 100%;
+    position:relative;
+    left:20px;
     background-color: lightblue;
     inset-block-start: 0px;
-    insert-block-end: 800px;
+    inset-block-end: 700px;
 }
