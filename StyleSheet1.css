@@ -113,6 +113,10 @@ button {
     background-color: #ccc;
 }
 
+#answerButton {
+    background-color: #ccc;
+}
+
     #clearButton:hover {
         background-color: #bbb;
     }
