@@ -82,6 +82,7 @@
 function placeCircle() {
     const canvas = document.getElementById("clickGraph");
     const draw = canvas.getContext("2d");
+    draw.strokeStyle = "black";
     let mouseX = event.clientX - canvas.offsetLeft;
     const mouseY = event.clientY - canvas.offsetTop + window.scrollY;
     const sector = Math.floor(mouseX / (canvas.clientWidth / 6));
@@ -137,7 +138,7 @@ for(let i = 1; i != 6; i++) {
         input -= (height * 0.05);
         input /= 0.9; 
         input /= (height/(yMaximum - yMinimum));
-        input += yMinimum; 
+        input += Number(yMinimum); 
         return input; 
     }
     function grade() {
@@ -161,20 +162,20 @@ for(let i = 1; i != 6; i++) {
             xGuess = reverseTransform(guessesX[i]);
             yGuess = reverseTransform(guessesY[i]);
 
-            if (data.results[data.results.length - 7 + i].o > data.results[data.results.length - 7 + i].c){
-                stockHigh = data.results[data.results.length - 7 + i].o;
-                stockLow = data.results[data.results.length - 7 + i].c;
+            if (data.results[data.results.length - 6 + i].o > data.results[data.results.length - 6 + i].c){
+                stockHigh = data.results[data.results.length - 6 + i].o;
+                stockLow = data.results[data.results.length - 6 + i].c;
                 increasing = false;
             } else {
-                stockHigh = data.results[data.results.length - 7 + i].c;
-                stockLow = data.results[data.results.length - 7 + i].o;
+                stockHigh = data.results[data.results.length - 6 + i].c;
+                stockLow = data.results[data.results.length - 6 + i].o;
                 increasing = true; 
             }
 
             if (increasing) {
-                if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.05)) {
+                if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.001)) {
                     draw.strokeStyle = "green";
-                } else if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.2)) {
+                } else if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.005)) {
                     draw.strokeStyle = "yellow";
                 } else {
                     draw.strokeStyle = "red";
@@ -195,6 +196,10 @@ for(let i = 1; i != 6; i++) {
                 draw.lineTo(guessesX[i], guessesY[i]);
                 draw.stroke();
             }
+
+            console.log(yGuess);
+            console.log(stockLow);
+            console.log(stockHigh);
         }
 
     }
