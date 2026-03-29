@@ -1,6 +1,8 @@
 <html>
     <body>
         <canvas id="stockGraph" width="1000" height="500" padding="20">
+        </canvas>
+        <canvas id="clickGraph" width="1000" height="500" padding="20" onClick="placeCircle()">
 
         </canvas>
     </body>
@@ -74,4 +76,14 @@
         xCoordinate += gap*3; 
     }
 
+</script>
+
+<script>
+function placeCircle() {
+    const canvas = document.getElementById("clickGraph");
+    const draw = canvas.getContext("2d");
+    draw.beginPath();
+    draw.arc(event.clientX - canvas.offsetLeft, event.clientY - canvas.offsetTop, 10, 0, 2 * Math.PI);
+    draw.stroke();
+}
 </script>
