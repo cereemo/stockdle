@@ -195,6 +195,13 @@
             draw.fillRect(xCoordinate, topyCoordinate, 2*gap, bottomyCoordinate-topyCoordinate);
             xCoordinate += gap*3; 
         }
+        draw.fillStyle = "black";
+        draw.font = "8pt Arial";
+        draw.fillText(graphMinimum, 0, height);
+        draw.fillText(graphMaximum, 0, 10);
+        draw.fillText(Math.round(graphRange), 0, height/2);
+
+
         canvas.setAttribute("yMinimum", yMinimum);
         canvas.setAttribute("yMaximum", yMaximum);
     }
@@ -309,6 +316,19 @@ function clearGraph() {
         input += Number(yMinimum); 
         return input; 
     }
+
+    function transform(input) {
+        const height = document.getElementById("clickGraph").clientHeight;
+        const yMaximum = document.getElementById("stockGraph").getAttribute('yMaximum');
+        const yMinimum = document.getElementById("stockGraph").getAttribute('yMinimum');
+        console.log(input);
+        input -= Number(yMinimum); 
+        input *= (height/(yMaximum - yMinimum));
+        input *= 0.9; 
+        input += (height * 0.05);
+        input = Math.abs(input - height);
+        return input; 
+    }
     function grade() {
         let xGuess;
         let yGuess;
@@ -364,10 +384,21 @@ function clearGraph() {
                 draw.lineTo(guessesX[i], guessesY[i]);
                 draw.stroke();
             }
-
-            console.log(yGuess);
-            console.log(stockLow);
-            console.log(stockHigh);
+            else {
+                if(increasing){
+                    draw.beginPath();
+                    draw.moveTo(0, transform(Number(data.results[data.results.length-6].c)));
+                    draw.lineTo(guessesX[i], guessesY[i]);
+                    draw.stroke();          
+                    console.log(transform(data.results[data.results.length-1])); 
+                } else {
+                    draw.beginPath();
+                    draw.moveTo(0, transform(Number(data.results[data.results.length-6].o)));
+                    draw.lineTo(guessesX[i], guessesY[i]);
+                    draw.stroke();          
+                    console.log(transform(data.results[data.results.length-1])); 
+                }
+            }
         }
         newGraph(false);
     }
