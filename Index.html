@@ -34,7 +34,7 @@
         <!-- MAIN BUTTONS -->
         <div id="mainButtons">
             <div id="symbolButton" class="infoBox">Symbol</div>
-            <div id="timeButton" class="infoBox">Jun 22, 2023 10:15 AM</div>
+            <div id="timeButton" class="infoBox">Feb, 2026</div>
             <button id="clearButton" onClick="clearGraph()">Clear</button>
             <button id="enterButton" onClick="grade()">Enter</button>
             <button id="answerButton" onClick="newGraph(true)">Show Answer</button>
@@ -193,6 +193,9 @@
         draw.fillText(Math.round(graphMaximum), 0, 10);
         draw.fillText(Math.round(graphRange/2 + graphMinimum), 0, height/2);
 
+        let firstDate = new Date(data.results[1].t );
+
+        draw.fillText(firstDate.getDate(), 15, height - 10);
 
         canvas.setAttribute("yMinimum", yMinimum);
         canvas.setAttribute("yMaximum", yMaximum);
@@ -233,6 +236,16 @@ function placeCircle() {
     draw.lineTo(clickWidth * ((sector + 1)/6), clickHeight);
     draw.stroke();
 
+    if(sector == 0) {
+        draw.font = "8pt Arial";
+        let lastKnownDate = new Date(stockJson.results[stockJson.results.length - 5].t );
+        draw.fillText(lastKnownDate.getDate(), 0, clickHeight - 5);
+    }
+    else if (sector == 5) {
+        draw.font = "8pt Arial";
+        let lastDate = new Date(stockJson.results[stockJson.results.length - 1].t );
+        draw.fillText(lastDate.getDate(), clickWidth - 20, clickHeight - 5);
+    }
     canvas.setAttribute(`sector${sector}x`, mouseX);
     canvas.setAttribute(`sector${sector}y`, mouseY);
 
@@ -249,6 +262,13 @@ function initGraph2() {
         clickDraw.lineTo(clickWidth * (i/6), clickHeight);
         clickDraw.stroke();
     }
+        
+    clickDraw.font = "8pt Arial";
+    let lastDate = new Date(stockJson.results[stockJson.results.length - 1].t );
+    let lastKnownDate = new Date(stockJson.results[stockJson.results.length - 5].t );
+    clickDraw.fillText(lastKnownDate.getDate(), 0, clickHeight - 5);
+    clickDraw.fillText(lastDate.getDate(), clickWidth - 20, clickHeight - 5);
+
 }
 function clearGraph() {
     const canvas = document.getElementById("clickGraph");
@@ -397,7 +417,7 @@ function clearGraph() {
 
 <script type="module">
     document.addEventListener("DOMContentLoaded", function () {
-    const tickerList = ["MMM", "ACE", "ABT", "ANF", "ACN", "ADBE", "AMD", "AES", "AET", "AFL", "AGAS", "APD", "ARG", "AKAM", "AA", "ALXN", "ATI", "AGN", "ALL", "ANR", "ALTR", "MO", "AMZN", "AEE", "AEP", "AXP", "AIG", "AMT", "AMP", "ABC", "AMGN", "APH", "APC", "ADI", "AON", "APA", "AIV", "APOL", "AAPL", "AMAT", "ADM", "AIZ", "TADSK", "ADP", "AN", "AZO", "AVB", "AVY", "AVP", "BHI", "BLL", "BAC", "BK", "BCR", "BAX", "BBT", "BEAM", "BDX", "BBBY", "BMS", "BRK.B", "BBY", "BIG", "BIIB", "BLK", "HRB", "BMC", "BA", "BWA", "BXP", "BSX", "BMY", "BRCM", "BF.B", "CHRW", "CA", "CVC", "COG", "CAM", "CPB", "COF", "CAH", "CFN", "KMX", "CCL", "CAT", "CBG", "CBS", "CELG", "CNP", "CTL", "CERN", "CF", "SCHW", "CHK", "CVX", "CMG", "CB", "CI", "CINF", "CTAS", "CSCO", "CCTXS", "CLF", "CLX", "CME", "CMS", "COH", "KO", "CCE", "CTSH", "CL", "CMCSA", "CMA", "CSC", "CAG", "COP", "CNX", "ED", "STZ", "CBE", "GLW", "COST", "CVH", "COV", "CCI", "CSX", "CMI", "CVS", "DHI", "DHR", "DRI", "DVA", "DF", "DE", "DELL", "DNR", "XRAY", "DVN", "DV", "DO", "DTV", "DISCA", "DLTR", "DRRD", "DOV", "DOW", "DPS", "DTE", "DD", "DUK", "DNB", "ETFC", "EMN", "ETN", "EBAY", "ECL", "EIX", "EW", "EA", "EMC", "EMR", "ESV", "ETR", "EOG", "EQT", "EFX", "EQR", "EL", "EXC", "EXPE", "EXPD", "ESRX", "XOM", "FFIV", "FDO", "FAST", "FII", "FDX", "FIS", "FITB", "FHN", "FSLR", "FE", "FISV", "FLIR", "FLS", "FLR", "FMC", "FTI", "FFRX", "FOSL", "BEN", "FCX", "FTR", "GME", "GCI", "GPS", "GD", "GE", "GIS", "GPC", "GNW", "GILD", "GS", "GT", "GOOG", "GWW", "HAL", "HOG", "HAR", "HRS", "HIG", "HAS", "HCP", "HCN", "HNZ", "HP", "HES", "HPQ", "HD", "HON", "HRL", "HSP", "HST", "HCBK", "HUM", "HBAN", "ITW", "IR", "TEG", "INTC", "ICE", "IBM", "IFF", "IGT", "IP", "IPG", "INTU", "ISRG", "IVZ", "IRM", "JBL", "JEC", "JDSU", "JNJ", "JCI", "JOY", "JPM", "JNPR", "KKEY", "KMB", "KIM", "KMI", "KLAC", "KSS", "KFT", "KR", "LLL", "LH", "LRCX", "LM", "LEG", "LEN", "LUK", "LXK", "LIFE", "LLY", "LTD", "LNC", "LLTC", "LMT", "LLO", "LOW", "LSI", "MTB", "MPC", "MAR", "MMC", "MAS", "MA", "MAT", "MKC", "MCD", "MHP", "MCK", "MJN", "MWV", "MDT", "MRK", "MET", "PCS", "MCHP", "MU", "MSFT", "MOLX", "TAP", "MON", "MNST", "MCO", "MS", "MOS", "MSI", "MUR", "MYL", "NBR", "NDAQ", "NOV", "NTAP", "NFLX", "NWL", "NFX", "NEM", "NWSA", "NEE", "NKE", "NI", "NE", "NBL", "JWN", "NSC", "NTRS", "NOC", "NU", "NRG", "NUE", "NVDA", "NYX", "ORLY", "OXY", "OMC", "OKE", "ORCL", "OI", "PCAR", "PLL", "PH", "PDCO", "PAYX", "BTU", "JCP", "PBCT", "POM", "PEP", "PKI", "PRGO", "PFE", "PCG", "PM", "PSX", "PNW", "PXD", "PBI", "PCL", "PNC", "RL", "PPG", "PPL", "PX", "PCP", "PCLN", "PFG", "PG", "PGR", "PLD", "PRU", "PEG", "PSA", "PHM", "QEP", "PWR", "QCOM", "DGX", "RRC", "RTN", "RHT", "RF", "RSG", "RAI", "RHI", "ROK", "COL", "ROP", "ROST", "RDC", "RSWY", "SAI", "CRM", "SNDK", "SCG", "SLB", "SNI", "STX", "SEE", "SHLD", "SRE", "SHW", "SIAL", "SPG", "SLM", "SJM", "SNA", "SO", "LUV", "SWN", "SE", "SSTJ", "SWK", "SPLS", "SBUX", "HOT", "STT", "SRCL", "SYK", "SUN", "STI", "SYMC", "SYY", "TROW", "TGT", "TEL", "TE", "THC", "TDC", "TER", "TSO", "TXN", "TXT", "HSY", "TRV", "TMO", "TIF", "TWX", "TWC", "TIE", "TJX", "TMK", "TSS", "TRIP", "TSN", "TYC", "USB", "UNP", "UNH", "UPS", "XUTX", "UNM", "URBN", "VFC", "VLO", "VAR", "VTR", "VRSN", "VZ", "VIAB", "VVNO", "VMC", "WMT", "WAG", "DIS", "WPO", "WM", "WAT", "WPI", "WLP", "WFC", "WDC", "WU", "WY", "WHR", "WFM", "WMB", "WIN", "WEC", "WPX", "WYN", "WYNN", "XEL", "XRX", "XLNX", "XL", "XYL", "YHOO", "YUM", "ZMH", "ZION"];
+    const tickerList = ["MMM", "ACE", "ABT", "ANF", "ACN", "ADBE", "AMD", "AES", "AET", "AFL", "AGAS", "APD", "ARG", "AKAM", "AA", "ALXN", "ATI", "AGN", "ALL", "ANR", "ALTR", "MO", "AMZN", "AEE", "AEP", "AXP", "AIG", "AMT", "AMP", "ABC", "AMGN", "APH", "APC", "ADI", "AON", "APA", "AIV", "APOL", "AAPL", "AMAT", "ADM", "AIZ", "TADSK", "ADP", "AN", "AZO", "AVB", "AVY", "AVP", "BHI", "BLL", "BAC", "BK", "BCR", "BAX", "BBT", "BEAM", "BDX", "BBBY", "BMS", "BRK.B", "BBY", "BIG", "BIIB", "BLK", "HRB", "BMC", "BA", "BWA", "BXP", "BSX", "BMY", "BRCM", "BF.B", "CHRW", "CA", "CVC", "COG", "CAM", "CPB", "COF", "CAH", "CFN", "KMX", "CCL", "CAT", "CBG", "CBS", "CELG", "CNP", "CTL", "CERN", "CF", "SCHW", "CHK", "CVX", "CMG", "CB", "CI", "CINF", "CTAS", "CSCO", "CCTXS", "CLF", "CLX", "CME", "CMS", "COH", "KO", "CCE", "CTSH", "CL", "CMCSA", "CSC", "CAG", "COP", "CNX", "ED", "STZ", "CBE", "GLW", "COST", "CVH", "COV", "CCI", "CSX", "CMI", "CVS", "DHI", "DHR", "DRI", "DVA", "DF", "DE", "DELL", "DNR", "XRAY", "DVN", "DV", "DO", "DTV", "DISCA", "DLTR", "DRRD", "DOV", "DOW", "DPS", "DTE", "DD", "DUK", "DNB", "ETFC", "EMN", "ETN", "EBAY", "ECL", "EIX", "EW", "EA", "EMC", "EMR", "ESV", "ETR", "EOG", "EQT", "EFX", "EQR", "EL", "EXC", "EXPE", "EXPD", "ESRX", "XOM", "FFIV", "FDO", "FAST", "FII", "FDX", "FIS", "FITB", "FHN", "FSLR", "FE", "FISV", "FLIR", "FLS", "FLR", "FMC", "FTI", "FFRX", "FOSL", "BEN", "FCX", "FTR", "GME", "GPS", "GD", "GE", "GIS", "GPC", "GNW", "GILD", "GS", "GT", "GOOG", "GWW", "HAL", "HOG", "HAR", "HRS", "HIG", "HAS", "HCN", "HNZ", "HP", "HES", "HPQ", "HD", "HON", "HRL", "HSP", "HST", "HCBK", "HUM", "HBAN", "ITW", "IR", "INTC", "ICE", "IBM", "IFF", "IGT", "IP", "IPG", "INTU", "ISRG", "IVZ", "IRM", "JBL", "JEC", "JDSU", "JNJ", "JCI", "JOY", "JPM", "JNPR", "KKEY", "KMB", "KIM", "KMI", "KLAC", "KSS", "KFT", "KR", "LLL", "LH", "LRCX", "LM", "LEG", "LEN", "LUK", "LXK", "LIFE", "LLY", "LTD", "LNC", "LLTC", "LMT", "LLO", "LOW", "LSI", "MTB", "MPC", "MAR", "MMC", "MAS", "MA", "MAT", "MKC", "MCD", "MHP", "MCK", "MJN", "MWV", "MDT", "MRK", "MET", "PCS", "MCHP", "MU", "MSFT", "MOLX", "TAP", "MON", "MNST", "MCO", "MS", "MOS", "MSI", "MUR", "MYL", "NBR", "NDAQ", "NOV", "NTAP", "NFLX", "NWL", "NFX", "NEM", "NWSA", "NEE", "NKE", "NI", "NE", "NBL", "JWN", "NSC", "NTRS", "NOC", "NU", "NRG", "NUE", "NVDA", "NYX", "ORLY", "OXY", "OMC", "OKE", "ORCL", "OI", "PCAR", "PLL", "PH", "PDCO", "PAYX", "BTU", "JCP", "PBCT", "POM", "PEP", "PKI", "PRGO", "PFE", "PCG", "PM", "PSX", "PNW", "PBI", "PCL", "PNC", "RL", "PPG", "PPL", "PX", "PCP", "PCLN", "PFG", "PG", "PGR", "PLD", "PRU", "PEG", "PSA", "PHM", "QEP", "PWR", "QCOM", "DGX", "RRC", "RTN", "RHT", "RF", "RSG", "RAI", "RHI", "ROK", "COL", "ROP", "ROST", "RDC", "RSWY", "SAI", "CRM", "SNDK", "SCG", "SLB", "SNI", "STX", "SEE", "SHLD", "SRE", "SHW", "SPG", "SLM", "SJM", "SNA", "SO", "LUV", "SWN", "SE", "SSTJ", "SWK", "SPLS", "SBUX", "HOT", "STT", "SRCL", "SYK", "SUN", "STI", "SYMC", "SYY", "TROW", "TGT", "TEL", "TE", "THC", "TDC", "TER", "TSO", "TXN", "TXT", "HSY", "TRV", "TMO", "TIF", "TWX", "TWC", "TIE", "TJX", "TMK", "TSS", "TRIP", "TSN", "TYC", "USB", "UNP", "UNH", "UPS", "XUTX", "UNM", "URBN", "VFC", "VLO", "VAR", "VTR", "VRSN", "VZ", "VIAB", "VVNO", "VMC", "WMT", "WAG", "DIS", "WPO", "WM", "WAT", "WPI", "WLP", "WFC", "WDC", "WU", "WY", "WHR", "WFM", "WMB", "WIN", "WEC", "WPX", "WYN", "WYNN", "XEL", "XRX", "XLNX", "XL", "XYL", "YHOO", "YUM", "ZMH", "ZION"];
     const ticker = tickerList[Math.floor(Math.random() * tickerList.length)];
     document.getElementById("symbolButton").innerText = ticker;
     const userAction = async () => {
