@@ -380,9 +380,9 @@ function clearGraph() {
             }
 
             if (increasing) {
-                if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.05)) {
+                if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.025)) {
                     draw.strokeStyle = "green";
-                } else if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.1)) {
+                } else if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.05)) {
                     draw.strokeStyle = "yellow";
                 } else {
                     draw.strokeStyle = "red";
