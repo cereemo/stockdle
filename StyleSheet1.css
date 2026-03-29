@@ -70,7 +70,11 @@ body {
 #dividerLine {
     height: 2px;
     background-color: #ddd;
-    margin: 20px 0;
+    margin: 20px auto;
+    width:700px;
+    align-items:center;
+    display:flex;
+    
 }
 
 /* ================= BUTTON ROW ================= */
@@ -102,23 +106,28 @@ button {
 
 #enterButton {
     background-color: #6f8f7a;
+    position:sticky;
     color: white;
 }
 
     #enterButton:hover {
         background-color: #5c7867;
+        position:sticky;
     }
 
 #clearButton {
     background-color: #ccc;
+    position:sticky;
 }
 
 #answerButton {
     background-color: #ccc;
+    position:sticky;
 }
 
     #clearButton:hover {
         background-color: #bbb;
+        position:sticky;
     }
 
 /* ================= MAIN CHART ================= */
@@ -181,10 +190,9 @@ button {
 
 #stockInfo {
     margin-top: 30px;
-    background-color: #eaeaea;
+    background-color: #f5f5f5;
     padding: 20px;
     border-radius: 20px;
-    box-shadow: 0 5px 0 #d0d0d0;
 }
 
     #stockInfo h2 {
@@ -192,8 +200,11 @@ button {
         margin-bottom: 10px;
     }
 
-.infoContent {
-    height: 150px;
-    border-top: 2px solid #ccc;
-    margin-top: 10px;
-}
+    #stockInfo p {
+        margin-top: 20px;
+        text-align: center;
+        position: center;
+        margin-left:auto;
+        margin-right:auto;
+
+    }
