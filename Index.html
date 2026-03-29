@@ -341,18 +341,18 @@ function clearGraph() {
             }
 
             if (increasing) {
-                if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.001)) {
+                if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.003)) {
                     draw.strokeStyle = "green";
-                } else if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.005)) {
+                } else if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.006)) {
                     draw.strokeStyle = "yellow";
                 } else {
                     draw.strokeStyle = "red";
                 }
             }
             else {
-                if (Math.abs(yGuess - stockLow) < (stockLow * 0.05)) {
+                if (Math.abs(yGuess - stockLow) < (stockLow * 0.003)) {
                     draw.strokeStyle = "green";
-                } else if (Math.abs(yGuess - stockLow) < (stockLow * 0.2)) {
+                } else if (Math.abs(yGuess - stockLow) < (stockLow * 0.006)) {
                     draw.strokeStyle = "yellow";
                 } else {
                     draw.strokeStyle = "red";
