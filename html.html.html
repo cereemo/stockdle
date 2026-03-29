@@ -1,14 +1,206 @@
 <html>
     <body>
         <canvas id="stockGraph" width="1000" height="500">
-
         </canvas>
+        <canvas id="clickGraph" width="1000" height="500"onClick="placeCircle()">
+        </canvas>
+
+        <button onClick="grade()">grade me</button>
     </body>
 </html>
 
-<script>
+<!--stock chart drawing script-->
+<script >
     const canvas = document.getElementById("stockGraph");
     const draw = canvas.getContext("2d");
+    const data = {"ticker": "AMZN","from": "2025-03-02", "to": "2025-03-27", "results": [{"c": 208.39,"h": 209.73,"l": 203.46,"o": 204.55,"t": 2},{"c": 208.73,"h": 209.18,"l": 202.48,"o": 203.10,"t": 3},{"c": 216.82,"h": 217.54,"l": 210.15,"o": 210.47,"t": 4},{"c": 218.94,"h": 220.47,"l": 215.59,"o": 215.98,"t": 5},{"c": 213.21,"h": 217.32,"l": 212.53,"o": 214.99,"t": 6},{"c": 213.49,"h": 213.82,"l": 207.11,"o": 210.45,"t": 9},{"c": 214.33,"h": 215.65,"l": 212.43,"o": 214.19,"t": 10},{"c": 212.65,"h": 217.00,"l": 211.35,"o": 215.71,"t": 11},{"c": 209.53,"h": 211.71,"l": 208.15,"o": 210.39,"t": 12},{"c": 209.61,"h": 210.56,"l": 206.22,"o": 209.61,"t": 13},{"c": 211.74,"h": 212.72,"l": 207.45,"o": 208.35,"t": 16},{"c": 215.20,"h": 216.70,"l": 212.43,"o": 212.82,"t": 17},{"c": 209.87,"h": 214.14,"l": 208.83,"o": 213.93,"t": 18},{"c": 207.06,"h": 209.12,"l": 206.05,"o": 207.06,"t": 19},{"c": 205.37,"h": 207.54,"l": 204.32,"o": 207.40,"t": 20},{"c": 210.14,"h": 212.80,"l": 209.51,"o": 209.79,"t": 23},{"c": 207.24,"h": 209.35,"l": 206.64,"o": 207.95,"t": 24},{"c": 211.71,"h": 213.07,"l": 209.90,"o": 211.56,"t": 25},{"c": 207.54,"h": 212.89,"l": 207.12,"o": 210.61,"t": 26},{"c": 199.34,"h": 206.60,"l": 199.14,"o": 206.46,"t": 27}]};
+    const width = canvas.clientWidth; //replace with actual canvas length
+    const height = canvas.clientHeight; //replace with actual height
+    const gap = (width) / (data.results.length * 4);
+    let i = 0;
+    let xCoordinate = gap;
+    let yMaximum = 0;
+    let yMinimum = Number(data.results[0].c);
 
-    
+    for (let stockData of data.results) {
+        if (Number(stockData.o) > yMaximum) {
+            yMaximum = Number(stockData.o);
+        }if (Number(stockData.c) > yMaximum) {
+            yMaximum = Number(stockData.c); 
+        }
+
+        if (Number(stockData.o) < yMinimum) {
+            yMinimum = Number(stockData.o);
+        }if (Number(stockData.c) < yMinimum) {
+            yMinimum = Number(stockData.c);
+        }
+    }
+
+    let range = yMaximum - yMinimum;
+    let graphMaximum = yMaximum + (range * 0.05);
+    let graphMinimum = yMinimum - (range * 0.05); 
+    let graphRange = graphMaximum - graphMinimum; 
+    let topyCoordinate = 0;
+    let bottomyCoordinate = 0; 
+
+    for (let stockData of data.results) {
+        if (Number(stockData.c) > Number(stockData.o)) {
+            topyCoordinate = (Number(stockData.c) - yMinimum);
+            bottomyCoordinate = (Number(stockData.o) - yMinimum);
+        } else {
+            bottomyCoordinate = (Number(stockData.c) - yMinimum);
+            topyCoordinate = (Number(stockData.o) - yMinimum);
+        }
+
+        topyCoordinate *= (height/(yMaximum - yMinimum));
+        topyCoordinate *= 0.9; 
+        topyCoordinate += (height * 0.05);
+        topyCoordinate = Math.abs(topyCoordinate - height);
+
+        bottomyCoordinate *= (height/(yMaximum - yMinimum));
+        bottomyCoordinate *= 0.9; 
+        bottomyCoordinate += (height * 0.05);
+        bottomyCoordinate = Math.abs(bottomyCoordinate - height);
+
+        if(stockData.c > stockData.o) {
+            draw.fillStyle = "green";
+        }
+        else {
+            draw.fillStyle = "red";
+        }
+
+        draw.fillRect(xCoordinate, topyCoordinate, 2*gap, bottomyCoordinate-topyCoordinate);
+        xCoordinate += gap*3; 
+    }
+    canvas.setAttribute("yMinimum", yMinimum);
+    canvas.setAttribute("yMaximum", yMaximum);
+
+</script>
+
+<!--guess placing script-->
+<script>
+function placeCircle() {
+    const canvas = document.getElementById("clickGraph");
+    const draw = canvas.getContext("2d");
+    draw.strokeStyle = "black";
+    let mouseX = event.clientX - canvas.offsetLeft;
+    const mouseY = event.clientY - canvas.offsetTop + window.scrollY;
+    const sector = Math.floor(mouseX / (canvas.clientWidth / 6));
+/* edge case handling, do later if have time
+    if(mouseX%(canvas.clientWidth/6) < 11) {
+        mouseX += mouseX%(canvas.clientWidth/6);
+    }
+    else if (mouseX%(canvas.clientWidth/6) > ((canvas.clientWidth/6) - 10)) {
+        mouseX -= mouseX%(canvas.clientWidth/6);
+    }
+*/
+    draw.clearRect(sector * (canvas.clientWidth / 6), 0, (canvas.clientWidth / 6), clickHeight);
+    draw.beginPath();
+    draw.arc(mouseX, mouseY, 10, 0, 2 * Math.PI);
+    draw.stroke();
+
+    clickDraw.beginPath();
+    clickDraw.moveTo(clickWidth * (sector/6), 0);
+    clickDraw.lineTo(clickWidth * (sector/6), clickHeight);
+    clickDraw.stroke();
+
+    clickDraw.beginPath();
+    clickDraw.moveTo(clickWidth * ((sector + 1)/6), 0);
+    clickDraw.lineTo(clickWidth * ((sector + 1)/6), clickHeight);
+    clickDraw.stroke();
+
+    canvas.setAttribute(`sector${sector}x`, mouseX);
+    canvas.setAttribute(`sector${sector}y`, mouseY);
+
+}
+const clickCanvas = document.getElementById("clickGraph");
+const clickDraw = clickCanvas.getContext("2d");
+const clickWidth = clickCanvas.clientWidth;
+const clickHeight = clickCanvas.clientHeight;
+
+for(let i = 1; i != 6; i++) {
+    clickDraw.beginPath();
+    clickDraw.moveTo(clickWidth * (i/6), 0);
+    clickDraw.lineTo(clickWidth * (i/6), clickHeight);
+    clickDraw.stroke();
+}
+
+</script>
+
+<!--grading script-->
+<script>
+    function reverseTransform(input) {
+        const height = document.getElementById("clickGraph").clientHeight;
+        const yMaximum = document.getElementById("stockGraph").getAttribute('yMaximum');
+        const yMinimum = document.getElementById("stockGraph").getAttribute('yMinimum');
+
+        input = Math.abs(input - height);
+        input -= (height * 0.05);
+        input /= 0.9; 
+        input /= (height/(yMaximum - yMinimum));
+        input += Number(yMinimum); 
+        return input; 
+    }
+    function grade() {
+        let xGuess;
+        let yGuess;
+        let increasing;
+        let stockHigh;
+        let stockLow; 
+        const data = {"ticker": "AMZN","from": "2025-03-02", "to": "2025-03-27", "results": [{"c": 208.39,"h": 209.73,"l": 203.46,"o": 204.55,"t": 2},{"c": 208.73,"h": 209.18,"l": 202.48,"o": 203.10,"t": 3},{"c": 216.82,"h": 217.54,"l": 210.15,"o": 210.47,"t": 4},{"c": 218.94,"h": 220.47,"l": 215.59,"o": 215.98,"t": 5},{"c": 213.21,"h": 217.32,"l": 212.53,"o": 214.99,"t": 6},{"c": 213.49,"h": 213.82,"l": 207.11,"o": 210.45,"t": 9},{"c": 214.33,"h": 215.65,"l": 212.43,"o": 214.19,"t": 10},{"c": 212.65,"h": 217.00,"l": 211.35,"o": 215.71,"t": 11},{"c": 209.53,"h": 211.71,"l": 208.15,"o": 210.39,"t": 12},{"c": 209.61,"h": 210.56,"l": 206.22,"o": 209.61,"t": 13},{"c": 211.74,"h": 212.72,"l": 207.45,"o": 208.35,"t": 16},{"c": 215.20,"h": 216.70,"l": 212.43,"o": 212.82,"t": 17},{"c": 209.87,"h": 214.14,"l": 208.83,"o": 213.93,"t": 18},{"c": 207.06,"h": 209.12,"l": 206.05,"o": 207.06,"t": 19},{"c": 205.37,"h": 207.54,"l": 204.32,"o": 207.40,"t": 20},{"c": 210.14,"h": 212.80,"l": 209.51,"o": 209.79,"t": 23},{"c": 207.24,"h": 209.35,"l": 206.64,"o": 207.95,"t": 24},{"c": 211.71,"h": 213.07,"l": 209.90,"o": 211.56,"t": 25},{"c": 207.54,"h": 212.89,"l": 207.12,"o": 210.61,"t": 26},{"c": 199.34,"h": 206.60,"l": 199.14,"o": 206.46,"t": 27}]};
+        const clickCanvas = document.getElementById("clickGraph");
+        const draw = clickCanvas.getContext("2d");
+
+        let guessesX = [];
+        let guessesY = [];
+        for(i = 0; i != 6; i++) {
+            guessesX[i] = clickCanvas.getAttribute(`sector${i}x`);
+            guessesY[i] = clickCanvas.getAttribute(`sector${i}y`);
+        }
+
+        for(i = 0; i != 6; i++) {
+            xGuess = reverseTransform(guessesX[i]);
+            yGuess = reverseTransform(guessesY[i]);
+
+            if (data.results[data.results.length - 6 + i].o > data.results[data.results.length - 6 + i].c){
+                stockHigh = data.results[data.results.length - 6 + i].o;
+                stockLow = data.results[data.results.length - 6 + i].c;
+                increasing = false;
+            } else {
+                stockHigh = data.results[data.results.length - 6 + i].c;
+                stockLow = data.results[data.results.length - 6 + i].o;
+                increasing = true; 
+            }
+
+            if (increasing) {
+                if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.001)) {
+                    draw.strokeStyle = "green";
+                } else if (Math.abs(yGuess - stockHigh) < (stockHigh * 0.005)) {
+                    draw.strokeStyle = "yellow";
+                } else {
+                    draw.strokeStyle = "red";
+                }
+            }
+            else {
+                if (Math.abs(yGuess - stockLow) < (stockLow * 0.05)) {
+                    draw.strokeStyle = "green";
+                } else if (Math.abs(yGuess - stockLow) < (stockLow * 0.2)) {
+                    draw.strokeStyle = "yellow";
+                } else {
+                    draw.strokeStyle = "red";
+                }
+            }
+            if (i > 0) {
+                draw.beginPath();
+                draw.moveTo(guessesX[i-1], guessesY[i-1]);
+                draw.lineTo(guessesX[i], guessesY[i]);
+                draw.stroke();
+            }
+
+            console.log(yGuess);
+            console.log(stockLow);
+            console.log(stockHigh);
+        }
+
+    }
 </script>
