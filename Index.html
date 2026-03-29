@@ -35,8 +35,7 @@
         <div id="mainButtons">
             <div id="symbolButton" class="infoBox">Symbol</div>
             <div id="timeButton" class="infoBox">Jun 22, 2023 10:15 AM</div>
-
-            <button id="clearButton">Clear</button>
+            <button id="clearButton" onClick="clearGraph()">Clear</button>
             <button id="enterButton" onClick="grade()">Enter</button>
         </div>
 
@@ -239,12 +238,18 @@ function initGraph2() {
     const clickWidth = clickCanvas.clientWidth;
     const clickHeight = clickCanvas.clientHeight;
 
-    for(let i = 1; i != 6; i++) {
+    for(let i = 0; i != 7; i++) {
         clickDraw.beginPath();
         clickDraw.moveTo(clickWidth * (i/6), 0);
         clickDraw.lineTo(clickWidth * (i/6), clickHeight);
         clickDraw.stroke();
     }
+}
+function clearGraph() {
+    const canvas = document.getElementById("clickGraph");
+    const clickDraw = canvas.getContext("2d");
+    clickDraw.clearRect(0, 0, canvas.clientWidth, canvas.clientHeight);
+    initGraph2();
 }
 </script>
 
